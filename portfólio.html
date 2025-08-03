@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio Pessoal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+    <div class="particulas"></div>
+    <nav class="navegacao">
+        <ul class="menu">
+            <li>
+                <a href="#início" class="menu-link">Início</a>
+            </li>
+
+            <li>
+                <a href="#sobre" class="menu-link">Sobre</a>
+            </li>
+
+            <li>
+                <a href="#projetos" class="menu-link">Projetos</a>
+            </li>
+
+            <li>
+                <a href="#contatos" class="menu-link">Contato</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main id="início" class="cabecalho">
+        <img src="./img/unnamed.jpg" alt="foto de Manoel" class="foto-perfil">
+        <h1>Manoel Vitor</h1>
+        <p class="cabecalho-sub-titulo">Desenvolvedor de Sites</p>
+    </main>
+
+    <section id="sobre" class="sobre">
+        <h2 class="sobre-titulo">Sobre mim</h2>
+        <div class="sobre-caixa">
+            <p class="sobre-paragrafo">
+                Eu sou um desenvolvedor web que gosto muito de criar experiências digitais envolventes. Com habilidades em HTML, CSS e JavaScript, estou sempre buscando aprender e aprimorar minhas competências. Este portfólio é uma vitrine dos meus projetos e do meu crescimento na área.
+            </p>
+        </div>
+    </section>
+
+    <section id="projetos" class="projetos">
+        <h2 class="projeto-titulo">Meus Projetos</h2>
+        <div class="projetos-caixa">
+
+            <div class="projetos-card">
+                <img src="./img/carros.png" alt="Projeto 1" class="projetos-imagem">
+                <div class="caixa-textos-projeto">
+                    <h3 class="info-projetos">Loja de Carros</h3>
+                    <p class="paragrafo-projetos">site de venda de carros com fotos, preços e filtros para facilitar a
+                        busca. O design é simples e funciona bem em qualquer dispositivo.</p>
+                </div>
+            </div>
+
+            <div class="projetos-card">
+                <img src="img\download (1).jfif" alt="Projeto 2" class="projetos-imagem">
+                <div class="caixa-textos-projeto">
+                    <h3 class="info-projetos">Página de Viagens</h3>
+                    <p class="paragrafo-projetos">página para promover viagens, com informações sobre destinos e um
+                        formulário de contato. Tudo feito para ser acessível em celulares e desktops.</p>
+                </div>
+            </div>
+
+            <div class="projetos-card">
+                <img src="img\download (2).jfif" alt="Projeto 3" class="projetos-imagem">
+                <div class="caixa-textos-projeto">
+                    <h3 class="info-projetos">História MC Kevin</h3>
+                    <p class="paragrafo-projetos">site sobre a vida do MC Kevin, com uma linha do tempo, fotos e vídeos.
+                        A ideia é contar a história dele de forma simples e visual.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="contatos" class="contatos">
+        <h2 class="contatos-titulo">Entre em Contato</h2>
+        <form class="formulario-contato" id="formulario" onsubmit="enviarWhats(event)">
+            <div class="grupo-form">
+                <input placeholder="Nome" class="campo-form" id="nome">
+            </div>
+            <div class="grupo-form">
+                <textarea placeholder="Digite sua Mensagem" class="campo-form" rows="6" id="mensagem"></textarea>
+            </div>
+
+            <button type="submit" class="botao-form">Enviar WhatsApp</button>
+        </form>
+    </section>
+
+    <button class="btn-voltar" onclick="history.back()">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </button>
+
+    <script>
+        function enviarWhats(event) {
+            event.preventDefault()
+            const nome = document.getElementById('nome').value;
+            const mensagem = document.getElementById('mensagem').value;
+            const telefone = '5584998344079';
+
+            const texto = `Olá! Me chamo ${nome}, ${mensagem}`
+            const msgFormatada = encodeURIComponent(texto)
+
+            const url = `https://wa.me/${telefone}?text=${msgFormatada}`
+
+            console.log(url)
+
+            window.open(url, '_blank')
+        }
+    </script>
+
+</body>
+</html>

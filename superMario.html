@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <title>Super Mario Jump</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #87CEEB;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+
+    .game-board {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      color: white;
+      z-index: 10;
+    }
+
+    .clouds {
+      position: absolute;
+      top: 0;
+      width: 300%;
+      animation: clouds-move 30s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes clouds-move {
+      from {
+        left: 0;
+      }
+
+      to {
+        left: -100%;
+      }
+    }
+
+    .ground {
+      position: absolute;
+      bottom: 0;
+      width: 300%;
+      height: 100px;
+      background: linear-gradient(to top, #228B22 50%, #006400 50%);
+      animation: ground-move 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes ground-move {
+      from {
+        left: 0;
+      }
+
+      to {
+        left: -100%;
+      }
+    }
+
+    .mario {
+      position: absolute;
+      bottom: 100px;
+      left: 50px;
+      width: 70px;
+      z-index: 2;
+    }
+
+    .jump {
+      animation: jump 500ms ease-out;
+    }
+
+    @keyframes jump {
+      0% {
+        bottom: 100px;
+      }
+
+      50% {
+        bottom: 220px;
+      }
+
+      100% {
+        bottom: 100px;
+      }
+    }
+
+    .pipe {
+      position: absolute;
+      bottom: 100px;
+      width: 60px;
+      right: -80px;
+      animation: pipe-move 2s linear infinite;
+      z-index: 2;
+    }
+
+    @keyframes pipe-move {
+      from {
+        right: -80px;
+      }
+
+      to {
+        right: 100vw;
+      }
+    }
+
+    .game-over {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 250px;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+
+    .btn-voltar {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      background-color: #7c3aed;
+      color: #fff;
+      font-family: "Poppins", sans-serif;
+      font-size: 1rem;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin: 1.5rem;
+      text-transform: uppercase;
+      z-index: 10;
+    }
+
+    .btn-voltar i {
+      font-size: 1.1rem;
+    }
+
+    .btn-voltar:hover {
+      background-color: #aa2bff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="game-board">
+    <div class="score" id="score">Pontos: 0</div>
+    <img src="./img/clouds.png" class="clouds" />
+    <div class="ground"></div>
+    <img src="./img/mario.gif" class="mario" id="mario" />
+    <img src="./img/pipe.png" class="pipe" id="pipe" />
+    <img src="./img/game-over.png" class="game-over" id="gameOver" />
+  </div>
+
+  <!-- Sons -->
+  <audio id="jumpSound" src="./sons/jump.mp3" preload="auto"></audio>
+  <audio id="dieSound" src="./sons/die.mp3" preload="auto"></audio>
+  <audio id="bgMusic" src="./sons/SuperMarioBros.mp3" preload="auto" loop></audio>
+
+  <button class="btn-voltar" onclick="history.back()">
+    <i class="fas fa-arrow-left"></i> Voltar
+  </button>
+
+
+  <script>
+    const mario = document.getElementById('mario');
+    const pipe = document.getElementById('pipe');
+    const scoreDisplay = document.getElementById('score');
+    const gameOver = document.getElementById('gameOver');
+    const jumpSound = document.getElementById('jumpSound');
+    const dieSound = document.getElementById('dieSound');
+    const bgMusic = document.getElementById('bgMusic');
+
+    let score = 0;
+    let isGameOver = false;
+
+    // Tocar música de fundo em loop e baixinha
+    bgMusic.volume = 0.5;
+    bgMusic.play().catch(() => {
+      document.addEventListener('keydown', () => bgMusic.play());
+      document.addEventListener('touchstart', () => bgMusic.play());
+    });
+
+    const jump = () => {
+      if (isGameOver) return;
+
+      jumpSound.currentTime = 0;
+      jumpSound.play();
+
+      if (!mario.classList.contains('jump')) {
+        mario.classList.add('jump');
+        setTimeout(() => mario.classList.remove('jump'), 500);
+      }
+    };
+
+    document.addEventListener('keydown', jump);
+    document.addEventListener('touchstart', jump);
+
+    const gameLoop = setInterval(() => {
+      const pipeLeft = pipe.getBoundingClientRect().left;
+      const marioBottom = parseInt(window.getComputedStyle(mario).bottom.replace('px', ''));
+
+      if (pipeLeft > 0 && pipeLeft < 120 && marioBottom < 140 && !isGameOver) {
+        isGameOver = true;
+
+        pipe.style.animation = 'none';
+        pipe.style.right = `${pipeLeft}px`;
+
+        gameOver.style.display = 'block';
+
+        dieSound.currentTime = 0;
+        dieSound.play();
+
+        dieSound.onended = () => {
+          location.reload();
+        };
+      }
+
+      if (pipeLeft <= 0 && !isGameOver) {
+        score++;
+        scoreDisplay.textContent = `Pontos: ${score}`;
+        if (score >= Infinity) {
+          window.location.href = "PARTE 1\meus-projetos.html";
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
